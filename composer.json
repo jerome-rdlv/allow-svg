@@ -1,0 +1,16 @@
+{
+    "name": "wp-allow-svg",
+    "description": "Allow to upload svg files in media manager.",
+    "homepage": "https://rue-de-la-vieille.fr/",
+    "type": "wordpress-muplugin",
+    "license": "private",
+    "authors": [
+	{
+	    "name"    : "Jérôme Mulsant",
+	    "homepage": "https://rue-de-la-vieille.fr/"
+	}
+    ],
+    "require": {
+        "php": ">=5.4"
+    }
+}
