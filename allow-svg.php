@@ -1,4 +1,12 @@
 <?php
+/*
+Plugin Name: Allow SVG
+Plugin URI: https://gitlab.rue-de-la-vieille.fr/jerome/allow-svg
+Description: Allow SVG upload
+Author: Jérôme Mulsant
+Version: 0.1
+Author URI: https://rue-de-la-vieille.fr/
+*/
 
 add_filter('upload_mimes', function ($mimes) {
     $mimes['svg'] = 'image/svg+xml';
