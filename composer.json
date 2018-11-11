@@ -1,9 +1,9 @@
 {
     "name": "allow-svg",
     "description": "Allow to upload svg files in media manager.",
-    "homepage": "https://rue-de-la-vieille.fr/",
+    "homepage": "https://gitlab.rue-de-la-vieille.fr/jerome/allow-svg",
     "type": "wordpress-muplugin",
-    "license": "private",
+    "license": "MIT",
     "authors": [
 	{
 	    "name"    : "Jérôme Mulsant",
