@@ -22,6 +22,7 @@ add_filter('wp_prepare_attachment_for_js', function ($response, $attachment, $me
     if ($response['mime'] == 'image/svg+xml' && empty($response['sizes'])) {
         $svg_file_path = get_attached_file($attachment->ID);
 
+        /** @noinspection PhpComposerExtensionStubsInspection */
         $svg = simplexml_load_file($svg_file_path);
         $attributes = $svg->attributes();
 
