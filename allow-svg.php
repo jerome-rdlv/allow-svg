@@ -22,6 +22,7 @@ add_filter('wp_prepare_attachment_for_js', function ($response, $attachment, $me
     if( $response['mime'] == 'image/svg+xml' && empty( $response['sizes'] ) ) {
         $svg_file_path = get_attached_file( $attachment->ID );
 
+        /** @noinspection PhpComposerExtensionStubsInspection */
         $svg = simplexml_load_file( $svg_file_path );
         $attributes = $svg->attributes();
 
@@ -38,13 +39,13 @@ add_filter('wp_prepare_attachment_for_js', function ($response, $attachment, $me
     return $response;
 }, 10, 3);
 add_filter('wp_check_filetype_and_ext', function ($data, $file, $filename, $mimes) {
-    if (get_bloginfo('version') < '4.7.3') {
+//    if (get_bloginfo('version') < '4.7.3') {
         $wp_filetype = wp_check_filetype($filename, $mimes);
         $ext = $wp_filetype['ext'];
         $type = $wp_filetype['type'];
         $proper_filename = $data['proper_filename'];
         return compact('ext', 'type', 'proper_filename');
-    }
-    return $data;
+//    }
+//    return $data;
 
 }, 10, 4);
