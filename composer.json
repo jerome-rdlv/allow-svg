@@ -1,5 +1,5 @@
 {
-    "name": "allow-svg",
+    "name": "jerome-rdlv/allow-svg",
     "description": "Allow to upload svg files in media manager.",
     "homepage": "https://gitlab.rue-de-la-vieille.fr/jerome/allow-svg",
     "type": "wordpress-muplugin",
