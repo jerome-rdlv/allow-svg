@@ -24,8 +24,8 @@ add_filter('wp_prepare_attachment_for_js', function ($response, $attachment, $me
     if ($response['mime'] !== 'image/svg+xml' || !empty($response['sizes'])) {
         return $response;
     }
+    
     $svg_file_path = get_attached_file($attachment->ID);
-
     if (!file_exists($svg_file_path)) {
         return $response;
     }
@@ -52,4 +52,25 @@ add_filter('wp_check_filetype_and_ext', function ($data, $file, $filename, $mime
     $type = $wp_filetype['type'];
     $proper_filename = $data['proper_filename'];
     return compact('ext', 'type', 'proper_filename');
+}, 10, 4);
+
+add_filter('wp_get_attachment_image_src', function ($image, $attachment_id, $size, $icon) {
+    $type = get_post_mime_type($attachment_id);
+    if ($type !== 'image/svg+xml') {
+        return $image;
+    }
+
+    $svg_file_path = get_attached_file($attachment_id);
+    if (!file_exists($svg_file_path)) {
+        return $image;
+    }
+
+    /** @noinspection PhpComposerExtensionStubsInspection */
+    $svg = simplexml_load_file($svg_file_path);
+    $attributes = $svg->attributes();
+    
+    $image[1] = (string)$attributes->width;
+    $image[2] = (string)$attributes->height;
+
+    return $image;
 }, 10, 4);
