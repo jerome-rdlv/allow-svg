@@ -54,7 +54,7 @@ add_filter('wp_check_filetype_and_ext', function ($data, $file, $filename, $mime
     return compact('ext', 'type', 'proper_filename');
 }, 10, 4);
 
-add_filter('wp_get_attachment_image_src', function ($image, $attachment_id, $size, $icon) {
+add_filter('wp_get_attachment_image_src', function ($image, $attachment_id) {
     $type = get_post_mime_type($attachment_id);
     if ($type !== 'image/svg+xml') {
         return $image;
@@ -69,8 +69,14 @@ add_filter('wp_get_attachment_image_src', function ($image, $attachment_id, $siz
     $svg = simplexml_load_file($svg_file_path);
     $attributes = $svg->attributes();
     
-    $image[1] = (string)$attributes->width;
-    $image[2] = (string)$attributes->height;
+    $vb = $attributes->viewBox;
+    if ($vb) {
+        [$x1, $y1, $x2, $y2] = explode(' ', $vb);
+    }
+    
+    // set width and height; try to set from viewBox if not found
+    $image[1] = (string)((int)$attributes->width ?: ($vb ? (int)round($x2 - $x1) : ''));
+    $image[2] = (string)((int)$attributes->height ?: ($vb ? (int)round($y2 - $y1) : ''));
 
     return $image;
-}, 10, 4);
+}, 10, 2);
