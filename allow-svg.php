@@ -71,7 +71,7 @@ add_filter('wp_get_attachment_image_src', function ($image, $attachment_id) {
     
     $vb = $attributes->viewBox;
     if ($vb) {
-        [$x1, $y1, $x2, $y2] = explode(' ', $vb);
+        list($x1, $y1, $x2, $y2) = explode(' ', $vb);
     }
     
     // set width and height; try to set from viewBox if not found
