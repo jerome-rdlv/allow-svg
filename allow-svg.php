@@ -24,7 +24,7 @@ add_filter('wp_prepare_attachment_for_js', function ($response, $attachment, $me
     if ($response['mime'] !== 'image/svg+xml' || !empty($response['sizes'])) {
         return $response;
     }
-    
+
     $svg_file_path = get_attached_file($attachment->ID);
     if (!file_exists($svg_file_path)) {
         return $response;
@@ -36,9 +36,9 @@ add_filter('wp_prepare_attachment_for_js', function ($response, $attachment, $me
 
     $response['sizes'] = array(
         'full' => array(
-            'url'         => $response['url'],
-            'width'       => (string)$attributes->width,
-            'height'      => (string)$attributes->height,
+            'url' => $response['url'],
+            'width' => (string)$attributes->width,
+            'height' => (string)$attributes->height,
             'orientation' => ((int)$attributes->width) > ((int)$attributes->height) ? 'landscape' : 'portrait',
         ),
     );
@@ -54,29 +54,45 @@ add_filter('wp_check_filetype_and_ext', function ($data, $file, $filename, $mime
     return compact('ext', 'type', 'proper_filename');
 }, 10, 4);
 
-add_filter('wp_get_attachment_image_src', function ($image, $attachment_id) {
+function allow_svg_get_size($attachment_id): ?array
+{
     $type = get_post_mime_type($attachment_id);
     if ($type !== 'image/svg+xml') {
-        return $image;
+        return null;
     }
 
     $svg_file_path = get_attached_file($attachment_id);
     if (!file_exists($svg_file_path)) {
-        return $image;
+        return null;
     }
 
-    /** @noinspection PhpComposerExtensionStubsInspection */
     $svg = simplexml_load_file($svg_file_path);
     $attributes = $svg->attributes();
-    
+
     $vb = $attributes->viewBox;
     if ($vb) {
         list($x1, $y1, $x2, $y2) = explode(' ', $vb);
     }
-    
-    // set width and height; try to set from viewBox if not found
-    $image[1] = (string)((int)$attributes->width ?: ($vb ? (int)round($x2 - $x1) : ''));
-    $image[2] = (string)((int)$attributes->height ?: ($vb ? (int)round($y2 - $y1) : ''));
 
+    // get width and height; try to set from viewBox if not found
+    return [
+        (int)$attributes->width ?: ($vb ? (int)round($x2 - $x1) : ''),
+        (int)$attributes->height ?: ($vb ? (int)round($y2 - $y1) : ''),
+    ];
+}
+
+add_filter('wp_get_attachment_image_src', function ($image, $attachment_id) {
+    if ($size = allow_svg_get_size($attachment_id)) {
+        $image[1] = $size[0];
+        $image[2] = $size[1];
+    }
     return $image;
+}, 10, 2);
+
+add_filter('wp_update_attachment_metadata', function ($data, $aid) {
+    if (!isset($data['width'], $data['height']) && ($size = allow_svg_get_size($aid))) {
+        $data['width'] = $size[0];
+        $data['height'] = $size[1];
+    }
+    return $data;
 }, 10, 2);
