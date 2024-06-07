@@ -30,7 +30,6 @@ add_filter('wp_prepare_attachment_for_js', function ($response, $attachment, $me
         return $response;
     }
 
-    /** @noinspection PhpComposerExtensionStubsInspection */
     $svg = simplexml_load_file($svg_file_path);
     $attributes = $svg->attributes();
 
@@ -82,6 +81,9 @@ function allow_svg_get_size($attachment_id): ?array
 }
 
 add_filter('wp_get_attachment_image_src', function ($image, $attachment_id) {
+    if ($image[1] && $image[2]) {
+        return $image;
+    }
     if ($size = allow_svg_get_size($attachment_id)) {
         $image[1] = $size[0];
         $image[2] = $size[1];
