@@ -81,7 +81,7 @@ function allow_svg_get_size($attachment_id): ?array
 }
 
 add_filter('wp_get_attachment_image_src', function ($image, $attachment_id) {
-    if ($image[1] && $image[2]) {
+    if (!is_array($image) || ($image[1] && $image[2])) {
         return $image;
     }
     if ($size = allow_svg_get_size($attachment_id)) {
