@@ -5,13 +5,14 @@
     "type": "wordpress-muplugin",
     "license": "MIT",
     "authors": [
-    {
-        "name"    : "Jérôme Mulsant",
-        "homepage": "https://rue-de-la-vieille.fr/"
-    }
+        {
+            "name": "Jérôme Mulsant",
+            "homepage": "https://rue-de-la-vieille.fr/"
+        }
     ],
     "require": {
         "php": ">=5.4",
+        "composer/installers": "^1.0 || ^2.0",
         "ext-simplexml": "*"
     }
 }
